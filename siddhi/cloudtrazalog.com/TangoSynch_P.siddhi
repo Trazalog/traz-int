@@ -1,4 +1,4 @@
-@App:name('TangoSynch_Prod')
+@App:name('TangoSynch_P')
 @App:description('Sincronizacion con Tango desde produccion')
 
 @sink(type = 'http-call', 
@@ -58,12 +58,12 @@ define stream LogStream (queue_id int, data_json string, empr_id string, prov_id
 
 @info(name = 'log')
 from NovedadTangoStream 
-select select queue_id, data_json,"9000" as empr_id, "33" as prov_id
+select queue_id, data_json,"9000" as empr_id, "33" as prov_id
 insert into LogStream;
 
 @info(name = 'novedades')
 from NovedadTangoStream 
-select select queue_id, data_json,"9000" as empr_id, "33" as prov_id 
+select queue_id, data_json,"9000" as empr_id, "33" as prov_id 
 insert into HTTPSinkStream;
 
 @info(name = 'post-grabacion')
