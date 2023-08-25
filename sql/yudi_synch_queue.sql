@@ -1,0 +1,15 @@
+-- "int".yudi_synch_queue definition
+
+-- Drop table
+
+-- DROP TABLE "int".yudi_synch_queue;
+
+CREATE TABLE "int".yudi_synch_queue (
+	queue_id serial4 NOT NULL,
+	data_json varchar NULL,
+	fec_alta timestamp NOT NULL DEFAULT now(),
+	fec_realizado timestamp NULL,
+	procesado int4 NULL DEFAULT 0,
+	empr_id int4 NULL,
+	CONSTRAINT yudi_synch_queue_pk PRIMARY KEY (queue_id)
+);
