@@ -19,6 +19,8 @@ define stream HTTPSinkStream (queue_id int, data_json string);
         username = "postgres",
         password = "!Password00", 
         operation ='insert',
+        database.server.name = "jmlitools",
+        connector.properties = 'slot.name=jmli,plugin.name=pgoutput',
         table.name = "int.jlmi_synch_queue", 
         on.error='wait',
         jdbc.driver.name = "org.postgresql.Driver",
