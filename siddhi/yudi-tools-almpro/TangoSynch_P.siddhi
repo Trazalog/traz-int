@@ -13,7 +13,7 @@
 define stream HTTPSinkStream (queue_id int, data_json string,empr_id string,prov_id string);
 
 @source(type = 'cdc',
-        url = "jdbc:sqlserver://;serverName=192.168.54.228;instance=SQLEXPRESS;databaseName=PRUEBA_TRAZALOG;encrypt=true;trustServerCertificate=true;",
+        url = "jdbc:sqlserver://;serverName=192.168.54.228;instance=SQLEXPRESS;databaseName=RAEL_SA;encrypt=true;trustServerCertificate=true;",
         username = "Axoft",
         password = "Axoft",
         table.name = "dbo.novedades_clientes_queue",
@@ -46,7 +46,7 @@ define stream HTTPResponseStream (queue_id int);
 -- Update processed_flag column in SQL Server table for each processed record
 @store(type='rdbms',
       jdbc.driver.name='com.microsoft.sqlserver.jdbc.SQLServerDriver',
-      jdbc.url='jdbc:sqlserver://;serverName=192.168.54.228;instance=SQLEXPRESS;databaseName=PRUEBA_TRAZALOG;encrypt=true;trustServerCertificate=true;',
+      jdbc.url='jdbc:sqlserver://;serverName=192.168.54.228;instance=SQLEXPRESS;databaseName=RAEL_SA;encrypt=true;trustServerCertificate=true;',
       database.server.name = "192.168.54.228\SQLEXPRESS",
       username='Axoft',
       password='Axoft')
