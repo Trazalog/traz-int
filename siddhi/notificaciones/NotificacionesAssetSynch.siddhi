@@ -8,7 +8,7 @@ define stream FooStream (registrationToken string);
 @sink(type = 'http-call', 
       publisher.url = "http://localhost:8290/tools/firebase/send", 
       method = "POST", 
-      sink.id = "2", 
+      sink.id = "8", 
       headers = "Content-Type:application/json",
       blocking.io='true',
       on.error='WAIT',
@@ -38,7 +38,7 @@ define stream NovedadAssetStream (queue_id int, data_json string);
 define stream ErrorSink (id int, name string, ERROR string);
 
 @source(type = 'http-call-response', 
-        sink.id = "2", 
+        sink.id = "8", 
         http.status.code = '2\d+',
         on.error='wait',
 	@map(type = 'json'))
