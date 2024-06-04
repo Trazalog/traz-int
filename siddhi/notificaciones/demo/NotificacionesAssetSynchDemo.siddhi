@@ -1,0 +1,78 @@
+@App:name('NotificacionesAssetSynch')
+
+@App:description("Notificaciones de assetplanner")
+
+@source(type='inMemory', topic='notificacion', @map(type='json'))
+define stream FooStream (registrationToken string);
+
+@sink(type = 'http-call',
+      publisher.url = "http://localhost:8290/tools/firebase/send",
+      method = "POST",
+      sink.id = "9",
+      headers = "Content-Type:application/json",
+      blocking.io='true',
+      on.error='WAIT',
+      @map(type = 'json'))
+define stream FirebaseHTTPSinkStream (queue_id int, data_json string);
+
+@source(type = 'cdc',
+        mode='polling',
+        polling.column = 'fec_alta',
+        jdbc.driver.name = 'com.mysql.jdbc.Driver',
+        url = "jdbc:mysql://10.142.0.11:3306/asp2sim",
+        username = "root",
+        password = "!Password00",
+        table.name = 'synch_notificacion_queue',
+        on.error='wait',
+        @map(type = 'keyvalue'))
+	
+define stream NovedadAssetStream (queue_id int, data_json string);
+
+-- Define sink to handle HTTP-call errors
+@sink(type='log',
+      prefix='HTTP-call error occurred: ',
+      on.error='wait',
+      @map(type='json',
+           enclosing.element='$',
+           @attributes(error='$.ERROR')))
+define stream ErrorSink (id int, name string, ERROR string);
+
+@source(type = 'http-call-response',
+        sink.id = "9",
+        http.status.code = '2\d+',
+        on.error='wait',
+        @map(type = 'json'))
+define stream HTTPResponseStream (queue_id int);
+
+
+-- Update processed_flag column in SQL Server table for each processed record
+
+@store(type='rdbms',
+      jdbc.driver.name='com.mysql.jdbc.Driver',
+      jdbc.url='jdbc:mysql://10.142.0.11:3306/asp2sim',
+      username='root',
+      password='!Password00')
+define table synch_notificacion_queue (queue_id int, procesado int);
+
+
+@sink(type = 'log')
+define stream LogStream (queue_id int, data_json string);
+
+@info(name = 'enviar_notificaciones')
+from NovedadAssetStream
+select * -- queue_id,
+       --  json:getString(data_json,'$.token') as token
+insert into FirebaseHTTPSinkStream;
+
+@info(name = 'log')
+from NovedadAssetStream
+select *
+insert into LogStream;
+
+
+/*@info(name = 'post-grabacion')
+from HTTPResponseStream
+select queue_id
+update synch_notificacion_queue
+set synch_notificacion_queue.procesado = 1
+on synch_notificacion_queue.queue_id == queue_id*/
