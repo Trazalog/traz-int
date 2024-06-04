@@ -1,4 +1,4 @@
-@App:name('NotificacionesAssetSynch')
+@App:name('NotificacionesAssetSynchDemo')
 
 @App:description("Notificaciones de assetplanner")
 
